@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Pink Picks 💕</title>
+
+  <!-- Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            poppins: ['Poppins', 'sans-serif'],
+          },
+          colors: {
+            softpink: '#FADADD',
+            pinkbtn: '#F7A8B8',
+            pinkhover: '#F48FB1',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .fade-in {
+      animation: fadeIn 0.8s ease forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+
+<body class="bg-softpink min-h-screen flex items-center justify-center font-poppins">
+
+  <div class="w-full max-w-md px-6 fade-in">
+    <div class="bg-white rounded-3xl shadow-xl p-7 text-center">
+
+      <img src="https://via.placeholder.com/150"
+        class="w-32 h-32 mx-auto rounded-full border-4 border-pink-200 object-cover mb-4"/>
+
+      <h1 class="text-2xl font-semibold text-gray-800">
+        ✨ Favorite Things ✨
+      </h1>
+
+      <p class="text-sm text-gray-500 mt-1 mb-6">
+        rekomendasi lucu & worth it 💗
+      </p>
+
+      <!-- LINKS FROM GOOGLE SHEET -->
+      <div id="links" class="space-y-4"></div>
+
+      <p class="text-xs text-gray-400 mt-6">
+        made with 💕 by djmaulana
+      </p>
+    </div>
+  </div>
+
+  <!-- SCRIPT GOOGLE SHEET -->
+  <script>
+    const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQs2RY_Ugaf4-AL8rhK5EG9I6c0KppjU4N6wFR1OGUOJ1_soRu5T5DUBXcBJ175JQpAhy-nL9jlUQRR/pub?gid=0&single=true&output=csv";
+
+    fetch(sheetURL)
+      .then(res => res.text())
+      .then(csv => {
+        const lines = csv.split('\n').slice(1);
+        const container = document.getElementById('links');
+        let number = 1;
+
+        lines.forEach(line => {
+          if (!line.trim()) return;
+
+          // handle comma in title
+          const lastComma = line.lastIndexOf(',');
+          const title = line.slice(0, lastComma).replace(/"/g, '');
+          const link = line.slice(lastComma + 1).trim();
+
+          if (!title || !link) return;
+
+          const a = document.createElement('a');
+          a.href = link;
+          a.target = "_blank";
+          a.className = `
+            block bg-pinkbtn text-white py-3 rounded-2xl
+            font-medium shadow-md text-center
+            active:scale-95 hover:bg-pinkhover transition
+          `;
+          a.innerText = `${number}. ${title}`;
+
+          container.appendChild(a);
+          number++;
+        });
+      });
+  </script>
+
+</body>
+</html>
